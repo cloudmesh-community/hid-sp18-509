@@ -49,8 +49,8 @@ project:
         - 318
     title: Using Docker to Benchmark Virtual Machines
     abstract: >
-        VirtualBox, a commercially-available hypervisor maintained byOracle, allows for 
-        the creation of lightweight, Docker-ready virtualmachines running the Boot2Docker  
+        VirtualBox, a commercially-available hypervisor maintained by Oracle, allows for 
+        the creation of lightweight, Docker-ready virtual machines running the Boot2Docker  
         operating system. This project articulates a formula for the creation of a VirtualBox 
         Boot2Docker virtual machine, and demonstrates how the performance of the virtual machine 
         can be benchmarked using popular utilities such as sysbench and stress-ng. The project will 
