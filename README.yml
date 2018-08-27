@@ -1,0 +1,62 @@
+---
+owner:
+    hid: 318
+    name: Irey, Ryan
+    url: https://github.com/bigdata-i523/hid318
+paper1:
+    exclude: False
+    review: Aug 27 2018
+    abstract: >
+       Precision medicine (PM) refers to the nationwide initiative to
+       incorporate individual differences into disease treatment and
+       prevention. The initiative, supported by the National
+       Institutes of Health (NIH), leverages the sophistication of big
+       data analytics and cloud computing infrastructures toward
+       increasing the efficacy of individualized care.
+    author:
+        - Ryan Irey
+    chapter: Health
+    hid:
+        - 318
+    status: Aug 27 2018 99%
+    title: Big Data in Precision Medicine
+    url: https://github.com/bigdata-i523/hid318/blob/master/paper1/i523_paper1.pdf
+paper2:
+    exclude: False
+    review: Aug 27 2018
+    abstract: > 
+        Docker’s swarm mode allows for the use of their automated container 
+        distribution technology across a cluster of computers on ashared subnet. 
+        Each node of the swarm takes on the role of either a manger or a worker. 
+        One may foresee that the initial setupand management of each node could be 
+        a cumbersome experience,especially for swarms with many nodes. To mitigate 
+        this problem, a Python package called Fabric can be used to execute shell 
+        commands over ssh.
+    author:
+        - Irey, Ryan
+    chapter: Technology
+    hid:
+        - 318
+    status: Aug 27 2018 99%
+    title: Creating a Docker Swarm with Fabric and Raspberry Pi
+    url: https://github.com/bigdata-i523/hid318/blob/master/paper2/i523_paper2.pdf
+project:
+    exclude: False
+    review: Sep 28 2018
+    author:
+        - Irey, Ryan
+    hid:
+        - 318
+    title: Using Docker to Benchmark Virtual Machines
+    abstract: >
+        VirtualBox, a commercially-available hypervisor maintained byOracle, allows for 
+        the creation of lightweight, Docker-ready virtualmachines running the Boot2Docker  
+        operating system. This project articulates a formula for the creation of a VirtualBox 
+        Boot2Docker virtual machine, and demonstrates how the performance of the virtual machine 
+        can be benchmarked using popular utilities such as sysbench and stress-ng. The project will 
+        culminate with a simple Python application for collecting, persisting, and visualizing 
+        the benchmark data.
+    url: 
+    type: project
+    status: Aug 27 2018 40%
+    chapter: Technology
