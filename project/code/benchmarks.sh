@@ -31,19 +31,8 @@ sysbench fileio --file-total-size=2G cleanup
 echo
 echo "Current benchmark: Stress test"
 echo "Duration: 30 seconds"
-stress-ng --cpu=-1 --cpu-method=matrixprod -t 30 --metrics-brief --log-file ./stress.txt
+stress-ng --cpu=-1 --cpu-method=matrixprod -t 60 --metrics-brief --log-file ./stress.txt
 # output: bogo ops/sec
-
-
-#--------------------------------#
-#-- Add data to table and plot --#
-#--------------------------------#
-
-chmod u+x ./code/persistAndGraph.py
-python3 ./code/persistAndGraph.py
-# cat ./code/benchGraph.png | feh --scale-up -
-
-
 
 #-----------------------------------------------------------------------------------------------#
 #-----------------------------------------------------------------------------------------------#
