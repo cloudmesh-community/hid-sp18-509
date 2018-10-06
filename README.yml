@@ -18,7 +18,7 @@ paper1:
     chapter: Health
     hid:
         - 318
-    status: Aug 27 2018 99%
+    status: Aug 27 2018 100%
     title: Big Data in Precision Medicine
     url: https://github.com/bigdata-i523/hid318/blob/master/paper1/i523_paper1.pdf
 paper2:
@@ -37,7 +37,7 @@ paper2:
     chapter: Technology
     hid:
         - 318
-    status: Aug 27 2018 99%
+    status: Aug 27 2018 100%
     title: Creating a Docker Swarm with Fabric and Raspberry Pi
     url: https://github.com/bigdata-i523/hid318/blob/master/paper2/i523_paper2.pdf
 project:
@@ -58,5 +58,5 @@ project:
         the benchmark data.
     url: 
     type: project
-    status: Aug 27 2018 40%
+    status: Aug 27 2018 70%
     chapter: Technology
