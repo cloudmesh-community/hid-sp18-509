@@ -73,8 +73,9 @@ The scope of big data analytics requires a tailored set of benchmarking tools, a
 
 \section{System Architecture}
 
+The host machine under study is a Macbook Pro manufactured by Apple, Inc. The machine is from the mid-2015 release cycle, and contains a 2.5 GHz Intel quad-core i7 processor and 16 GB of 1600 MHz DDR3 RAM. The host machine is running Docker Community Edition version 18.06.1 and Oracle VirtualBox version 5.2.18. 
+
 \begin{itemize}
-  \item Host machine + Docker + VirtualBox
   \item VirtualBox + Boot2Docker VM
   \item Docker container w/ Benchmark tools
   \item Output graph
@@ -129,7 +130,7 @@ Using the {\tt stress-ng} memthrash task, this benchmark task iterates over a sp
 
 \subsection{Python application}
 
-The main purposes of the Python application are to extract the benchmark data from the log files put out by each benchmark task, save any repeated measurements to a master table, and to produce visualizations of the benchmark data. The data extraction is accomplished by taking in each log file, converting the data to strings, parsing the strings into a list, and then selecting the appropriate string from the list. For example, the data for Benchmark #1 is extracted as such:
+The main purposes of the Python application are to extract the benchmark data from the log files put out by each benchmark task, save any repeated measurements to a master table, and to produce visualizations of the benchmark data. The data extraction is accomplished by taking in each log file, converting the data to strings, parsing the strings into a list, and then selecting the appropriate string from the list. For example, the data for Benchmark \#1 is extracted as such:
 
 \begin{lstlisting}
 cpu = pd.read_csv("./cpu.txt", error_bad_lines = False)
@@ -164,30 +165,107 @@ RUN pip3 install -r requirements.txt
 CMD ["/bin/bash"]
 \end{lstlisting}
 
-\begin{itemize}
-  \item Dockerfile
-\end{itemize}
+The Dockerfile specifies the configuration of the different layers comprising the Docker container. Here, the container is built on a base Ubuntu image. The Dockerfile subsequently handles the updating of some Ubuntu utilities, and proceeds to install the benchmark tools comprising the suite under study. Next, the relevant bash and python script files are copied. Finally, the Python package requirements are installed via {tt\ pip}.
+
+\subsection{Executing the benchmark suite}
+The Docker container is initialized by running the following code snippet. Explicitly naming the container will alleviate some of the cumbersome nature of viewing the benchmark plot.
+
+\begin{lstlisting}
+\$ docker run -it --name=i523proj rlirey/i523-project
+\end{lstlisting}
+
+With the aforementioned Docker container up and running, a bash shell is the first point of contact the user has with the container. Each iteration of the benchmark suite requires the execution of the following code snippet:
+
+\begin{lstlisting}
+\$ python3 ./code/i523-proj.py
+\end{lstlisting}
+
+After the first execution of the benchmark suite, the user will notice that a benchGraph.png file is created in the directory. Subsequent executions of the benchmark suite will update the image file with data points from each execution.
 
 \section{Visualizing Benchmark Data}
 
-One product of the Python program is a Pandas data frame, on which the matplotlib library can easily be called for visualization purposes. Ultimately, the output of the Python program is a PNG file that plots each of the five benchmark measures in a single figure. For example, after five iterations of data collection, a visualization akin to that in Figure \ref{f:samplePlot} is produced
+One product of the Python program is a Pandas data frame, on which the matplotlib library can easily be called for visualization purposes. Ultimately, the output of the Python program is a PNG file that plots each of the five benchmark measures in a single figure. For example, after five iterations of data collection, a visualization akin to that in Figure \ref{f:plotMBP} is produced. The data in Figure \ref{f:plotMBP} is that observed over six iterations of the benchmark suite on the baseline host machine, the Apple Macbook Pro.
 
 \begin{figure}[!ht]
   \centering\includegraphics[width=\columnwidth]{images/samplePlot.png}
-  \caption{A sample visualization of the benchmarking procedure after six iterations.}\label{f:samplePlot}
+  \caption{A visualization of the benchmarking data after six iterations on the baseline host machine (Apple Macbook Pro).}\label{f:plotMBP}
 \end{figure}
 
 \section{A cloud-based comparison}
 
 \subsection{Preparing the cloud environment}
 
+Setting up a cloud-based computational environment is a relatively straight-forward process, the details of which are beyond the scope of this manuscript. It is assumed that the reader is familiar with the initialization process of the Amazon Web Services (AWS) EC2 platform, which allows for the creation of cloud-based computational environments of various hardware and software configurations and complexities. Here, for comparison with the baseline host machine, an AWS Ubuntu Server is deployed, accessible via {\tt ssh} in the bash shell. 
+
+\begin{lstlisting}
+\$ ssh -i </path/to/key> \ ubuntu@<server_address>.amazonaws.com
+\end{lstlisting}
+
+The AWS server runs Ubuntu Server version 18.04, and contains 96 processing cores and 384 GB of RAM with a 25 Gigabit network interface. This configuration was selected for its stark differences in system architecture when compared with the baseline host machine. The only prerequisite to executing the benchmark suite on the AWS Ubuntu server is to install the Docker engine via the command line. The details of Docker installation via the command line are easy to follow and provided in Docker's documentation library; thus, they will not be detailed here.
+
 \subsection{Executing the benchmark suite}
 
+With the Docker engine successfully installed on the AWS Ubuntu server, the execution of the containerized benchmark suite is identical to that on the baseline host machine:
+
+\begin{lstlisting}
+\$ docker run -it --name=i523proj rlirey/i523-project
+\end{lstlisting}
+
+Recall that executing the container results in a command line interface from within the container. The user simply follows the same steps as outlined above for the baseline host machine:
+
+\begin{lstlisting}
+\$ python3 ./code/i523-proj.py
+\end{lstlisting}
+
+Running the above code snippet multiple times will result in the population of a data for each iteration, as expected.
+
 \subsection{Extraction of results}
+After running six iterations of the containerized benchmark tools, the visualization of the outcomes is ready for extraction. Recall that the image extraction is a two-step process. First, from the Ubuntu server's command line, the image is copied out of the Docker container via Docker's {\tt cp} (copy) command:
+
+\begin{lstlisting}
+sudo docker cp i523proj:/myapp/benchGraph.png .
+\end{lstlisting}
+
+With the graph image now copied out of the container, the file can now be copied from the Ubuntu server to the final destination, the host machine, via the {tt\ scp} (secure copy) command: 
+
+\begin{lstlisting}
+sudo scp -i </path/to/key> \ ubuntu@<server_address>.amazonaws.com:~/benchGraph.png .
+\end{lstlisting}
+
+Now that the graph image file is copied to the host machine, it can be opened and examined. Figure \ref{f:plotAWS} displays such a visualization, as obtained by the AWS Ubuntu server.
+
+\begin{figure}[!ht]
+  \centering\includegraphics[width=\columnwidth]{images/benchGraph_AWS.png}
+  \caption{A visualization of the benchmarking data after six iterations on the cloud-based comparison machine (Amazon Web Services Ubuntu Server).}\label{f:plotAWS}
+\end{figure}
+
+\subsection{Comparison of findings}
+
+A close examination of \ref{f:plotMBP} and \ref{f:plotAWS} reveals several important observations.
+
+\subsubsection{Benchmark \#1 and \#2: Prime number calculation and latency}
+
+The number of prime number calculation events per second spans a wide range on the baseline host machine, varying by around 2000 events in subsequent iterations. On the AWS Ubuntu server, not only is the raw number of events per second almost double that of the baseline host machine, the variance in measurements across iterations is much tighter than that of the baseline host machine. The average latency between calculations on the host machine varies slightly between approximately 1.5 and 3.0 ms, whereas the latency between calculations on the AWS Ubuntu server is much lower, approximately 0.87 ms, staying relatively constant over subsequent iterations.
+
+\subsubsection{Benchmark \#3 and \#4: Random read/write}
+
+On the baseline host machine, whose hard disk storage is soldered directly to the logic board, the read and write speeds follow a very similar trajectory over the course of six iterations, spiking with read speeds approaching 200 mb/s and write speeds approaching 180 mb/s. Since the AWS Ubuntu server has a limited amount of network-attached EBS storage, the read and write speeds are considerably slower than that of the baseline host machine, although the trajectory of the read/write speeds generally increases over the course of six iterations.
+
+\subsubsection{Benchmark \#5: Matrix product}
+
+Matrix product calculation operations for the baseline host machine follows a concave trajectory, varying by almost 100 operations per second over subsequent iterations. Conversely, matrix product calculation operations for the AWS follows a convex trajectory, running nearly three times the number of operations per second compared to the baseline host machine. This is likely attributed to the much greater count of processing cores found in the system configuration of the AWS Ubuntu server.
+
+\subsubsection{Benchmark \#6: HDD operations}
+
+The trajectory of the HDD operations across iterations is similar between the baseline host machine and the AWS Ubuntu server. However, the raw number of operations per second is around 60\% fewer for the AWS Ubuntu server, likely due to its hard disk storage configuration as a network-attached volume.
+
+\subsubsection{Benchmark \#7: Memory Thrashing}
+
+Memory thrashing operations on the baseline host machine stay relatively constant over the course of several iterations, before plummeting by nearly 100 operations per second in subsequent iterations. The AWS Ubuntu server, however, maintains a much greater number of operations per second over the course of several iterations (with the exception of one obvious anomalous measurement). These differences can be attributed to the stark differences in RAM between the two system architectures.
 
 \section{Limitations}
 
-The Python program produces a graphical output of the benchmark tests called ''benchGraph.png''. However, one severe limitation of this project is the ability to simply open the image for inspection. Efforts to connect the Docker container to the host machine's X11 service were not successful, and so useful command line image viewers such as {\tt feh} are not utilized here. As a workaround, a shell script called ''copyImage.sh'' aids in the transfer of the ''benchGraph.png'' in two stages. The image is first transferred from inside the Docker container to the VirtualBox virtual machine. The image is then transferred from the VirtualBox virtual machine to the host machine, where the image can be successfully opened and inspected. 
+The Python program produces a graphical output of the benchmark tests called ''benchGraph.png''. However, one severe limitation of this project is the ability to easily open the image for inspection. Efforts to connect the Docker container to the host machine's X11 service were not successful, and so useful command line image viewers such as {\tt feh} are not utilized here. As a workaround, a shell script called ''copyImage.sh'' aids in the transfer of the ''benchGraph.png'' in two stages. As described above, the image is first transferred from inside the Docker container to the VirtualBox virtual machine. The image is then transferred from the VirtualBox virtual machine to the host machine, where the image can be successfully opened and inspected. 
 
 \section{Extensions}
 
