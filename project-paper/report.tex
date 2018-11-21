@@ -27,7 +27,7 @@
 }
 
 \begin{document}
-\title{Using Docker to Benchmark Virtual Machines}
+\title{Benchmarking Virtual Machines for Big Data Applications}
 
 \author{Ryan L. Irey, M.A.}
 \orcid{1234-5678-9012}
@@ -45,7 +45,7 @@
 
 \begin{abstract}
 
-VirtualBox, a commercially-available hypervisor maintained by Oracle, allows for the creation of lightweight, Docker-ready virtual machines running the Boot2Docker operating system. This project articulates a formula for the creation of a VirtualBox Boot2Docker machine, and demonstrates how the performance of the virtual machine can be benchmarked using popular utilities such as {\tt sysbench} and {\tt stress-ng}. The project will culminate with a simple Python application for collecting, persisting, and visualizing the benchmarked data.
+Benchmarking systems used for big data applications is a lively area of study. VirtualBox, a commercially-available hypervisor maintained by Oracle, allows for the creation of lightweight, Docker-ready virtual machines running the Boot2Docker operating system. This project and accompanying manuscript articulates a work flow for the creation of a VirtualBox Boot2Docker machine, and demonstrates how the performance of the virtual machine can be benchmarked using popular utilities such as {\tt sysbench} and {\tt stress-ng}. The project utilizes a simple Python application for collecting, persisting, and visualizing the benchmarked data. Benchmark measurements are compared between a consumer-level personal computer and a cloud-based computational platform.
 
 \end{abstract}
 
@@ -55,25 +55,23 @@ VirtualBox, a commercially-available hypervisor maintained by Oracle, allows for
 
 \section{Introduction}
 
-Benchmarking is a common practice in which a system's architecture is measured under specific conditions that, ideally, are representative of the tasks performed on a day-to-day basis. From a theoretical standpoint, the history of computer benchmarking has endured spirited debate throughout the evolution of computing. As computer adoption continues to grow and computer applications further diversify, so too have benchmarking procedures and applications for measuring the capabilities of modern machinery evolved.
+Benchmarking is a common practice in which a system's architecture is measured under specific conditions that, ideally, are representative of the tasks performed on a day-to-day basis. The benchmarking of systems used for big data applications is a lively area of study; however, several benchmarking suites for big data applications have been formulated to encapsulate the unique aspects of big data analysis. From a theoretical standpoint, the history of computer benchmarking has endured spirited debate throughout the evolution of computing. As computer adoption continues to grow and computer applications further diversify and extend into big data applications, so too have benchmarking procedures and applications for measuring the capabilities of modern machinery evolved.
 
 Docker is a platform that offers a variety of powerful tools, primarily for the containerization of applications and for creating computer clusters via their Swarm product. Moreover, the hypervisor VirtualBox allows for the creation of Boot2Docker virtual machines (VMs) which are VMs that are, for all intents and purposes, ''Docker-ready''. Building and deploying applications via containers is a relatively new concept, and so an understanding of appropriate benchmark procedures has yet to be well-defined. 
 
-The scope of this manuscript is to describe a procedure for creating a Docker-ready virtual machine upon which a containerized benchmarking suite can be deployed. Within the benchmarking suite, a simple Python application collects and persists specific metrics from the benchmarking suite, culminating in a graphical visualization of the benchmarked data. 
+Following a brief overview of the current state of big data benchmarking, the scope of this manuscript is to describe a procedure for creating a Docker-ready virtual machine upon which a containerized benchmarking suite can be deployed. Within the benchmarking suite, a simple Python application collects and persists specific metrics from the benchmarking suite, culminating in a graphical visualization of the benchmarked data. 
 
-\section{Benchmarking for Big Data}
+\section{Benchmarking for Big Data Applications}
 
 The scope of big data analytics requires a tailored set of benchmarking tools, as the computational tasks that are representative of the day-to-day workload are likely very different from those leveraging consumer-level machines.
 
 \begin{itemize}
-  \item Workload evaluation
-  \item Other things
-  \item Other things
+  \item Workload evaluation/generation
+  \item Types of Big Data benchmarks
+  \item Big Data metrics
 \end{itemize}
 
 \section{System Architecture}
-
-The host machine under study is a Macbook Pro manufactured by Apple, Inc. The machine is from the mid-2015 release cycle, and contains a 2.5 GHz Intel quad-core i7 processor and 16 GB of 1600 MHz DDR3 RAM. The host machine is running Docker Community Edition version 18.06.1 and Oracle VirtualBox version 5.2.18. 
 
 \begin{itemize}
   \item VirtualBox + Boot2Docker VM
@@ -81,12 +79,14 @@ The host machine under study is a Macbook Pro manufactured by Apple, Inc. The ma
   \item Output graph
 \end{itemize}
 
+\begin{figure}[!ht]
+  \centering\includegraphics[width=\columnwidth]{images/SysArch1.png}
+  \caption{A visualization of the system architecture used for the baseline host machine.}\label{f:sysarch1}
+\end{figure}
+
 \section{Host Machine Setup}
 
-\begin{itemize}
-  \item Docker engine installation
-  \item VirtualBox install
-\end{itemize}
+The host machine under study is a Macbook Pro manufactured by Apple, Inc. The machine is from the mid-2015 release cycle, and contains a 2.5 GHz Intel quad-core i7 processor and 16 GB of 1600 MHz DDR3 RAM. The host machine is running Docker Community Edition version 18.06.1 and Oracle VirtualBox version 5.2.18.
 
 \section{Creating the Virtual Machine}
 
@@ -95,8 +95,6 @@ The host machine's Docker engine, coupled with the installation of the VirtualBo
 \begin{lstlisting}
 \$ docker-machine create --virtualbox-cpu-count "-1" --virtualbox-memory 1024 -d virtualbox vm
 \end{lstlisting}
-
-
 
 This code snippet will create a virtual machine using VirtualBox; the name of the virtual machine is given by the final argument, here, named ''vm''. The ''-1'' argument for --virtualbox-cpu-count allows the virtual machine to access all of the processing power of the host machine. Furthermore, specifying ''1024'' as the virtual memory allocation ensures that certain memory-related benchmark tasks, described below, are exercised appropriately with regard to the specified benchmark parameters.
 
@@ -265,7 +263,7 @@ Memory thrashing operations on the baseline host machine stay relatively constan
 
 \section{Limitations}
 
-The Python program produces a graphical output of the benchmark tests called ''benchGraph.png''. However, one severe limitation of this project is the ability to easily open the image for inspection. Efforts to connect the Docker container to the host machine's X11 service were not successful, and so useful command line image viewers such as {\tt feh} are not utilized here. As a workaround, a shell script called ''copyImage.sh'' aids in the transfer of the ''benchGraph.png'' in two stages. As described above, the image is first transferred from inside the Docker container to the VirtualBox virtual machine. The image is then transferred from the VirtualBox virtual machine to the host machine, where the image can be successfully opened and inspected. 
+The Python program produces a graphical output of the benchmark tests called ''benchGraph.png''. However, one cumbersome limitation of this project is the ability to easily open the image for inspection. Efforts to connect the Docker container to the host machine's X11 service were not successful, and so useful command line image viewers such as {\tt feh} are not utilized here. As a workaround, a shell script called ''copyImage.sh'' aids in the transfer of the ''benchGraph.png'' in two stages. As described above, the image is first transferred from inside the Docker container to the VirtualBox virtual machine. The image is then transferred from the VirtualBox virtual machine to the host machine, where the image can be successfully opened and inspected. 
 
 \section{Extensions}
 
