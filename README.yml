@@ -56,7 +56,7 @@ project:
         can be benchmarked using popular utilities such as sysbench and stress-ng. The project will 
         culminate with a simple Python application for collecting, persisting, and visualizing 
         the benchmark data.
-    url: 
+    url: https://github.com/cloudmesh-community/hid-sp18-509/tree/master/project-paper
     type: project
-    status: Aug 27 2018 70%
+    status: Nov 21 2018 80%
     chapter: Technology
